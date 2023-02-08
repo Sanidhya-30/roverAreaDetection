@@ -1,14 +1,12 @@
-from .Rover import *    
-
-def clean(rover):
-    print('Cleaning...')
+from .Rover import * 
+from src.roverClean import cleanArea
 
 
 def mainStart(serial=None, connection=None):
     if serial != None:
         print(serial)
         rover = Rover(roverSerial=serial,connection=connection)
-        clean(rover=rover)
+        cleanArea(rover=rover)
 
 
 
