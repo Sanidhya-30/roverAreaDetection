@@ -1,12 +1,14 @@
 from .Rover import * 
-from src.roverClean import cleanArea
+from src.roverClean import cleanArea, checkDistance
 
 
 def mainStart(serial=None, connection=None):
     if serial != None:
         print(serial)
         rover = Rover(roverSerial=serial,connection=connection)
-        cleanArea(rover=rover)
+        # cleanArea(rover=rover)
+        checkDistance(rover=rover)
+
 
 
 
