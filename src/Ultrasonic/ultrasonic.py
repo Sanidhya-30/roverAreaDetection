@@ -7,9 +7,11 @@ GPIO.setwarnings(False)
 
 class Ultrasonic:
     def __init__(self, TRIGGER, ECHO):
+        print('Created')
         self.TRIGGER = TRIGGER
         self.ECHO = ECHO
         self.driveOk = False
+        self.areaCompleted = False
         GPIO.setup(self.TRIGGER, GPIO.OUT)
         GPIO.setup(self.ECHO, GPIO.IN)
 
@@ -44,15 +46,15 @@ class Ultrasonic:
     def checkDriveOk(self):
         edgeDist = self.getDistance()
         if edgeDist <= 10:
-            self.driveOk = True
+            return True
             print ("Measured Distance = %.1f cm" % edgeDist)
         else:
-            self.driveOk = False
+            return False
             print ("Measured Distance = %.1f cm" % edgeDist)
             time.sleep(1)
             dEdge = self.getDistance()
             if dEdge > 10:
-                self.driveOk = False
+                return False
                 print ("Measured Distance 2 = %.1f cm" % dEdge)
             else:
                 pass

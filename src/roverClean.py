@@ -49,8 +49,49 @@ def cleanArea(rover):
         keyboard_shutdown()
 
 def checkDistance(rover):
+    print('started')
     while True:
+        front = rover.ul_front_edge.checkDriveOk()
+        back = rover.ul_back_edge.checkDriveOk()
         frontDist = rover.ul_front_edge.getDistance()
         backDist = rover.ul_back_edge.getDistance()
-        print("Front Distance:", frontDist)
-        print("Back Distance:", backDist)
+        
+        if front:
+            print("Drive")
+            print("Front Distance:", frontDist)
+        else:
+            print("Dont Drive Forward, Edge Reached")
+        
+        print("------------------------------------")
+        if back:
+            print("Drive")
+            print("Back Distance:", backDist)
+        else:
+            print("Dont Drive Backward, Edge Reached")
+        
+        print("************************************************************************************")
+        time.sleep(1)
+        
+        
+def cleanPanels():
+    try:
+
+        #Check if cleaning should start
+        while True:
+            front = rover.ul_front_edge.checkDriveOk()
+            back = rover.ul_back_edge.checkDriveOk()
+            frontDist = rover.ul_front_edge.getDistance()
+            backDist = rover.ul_back_edge.getDistance()
+            
+            if front:
+                print('Forward')
+                coverForwardArea(rover=rover,spd=2)
+            elif (front = False) and back:
+                rover.ul_front_edge.areaCompleted = True
+                coverBackwardArea(rover=rover)
+            elif (rover.ul_front_edge.areaCompleted = True and )
+            
+            
+
+    except KeyboardInterrupt:
+        keyboard_shutdown()
