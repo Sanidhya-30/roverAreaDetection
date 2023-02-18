@@ -2,25 +2,13 @@ from .util import keyboard_shutdown
 import time
 
 def coverForwardArea(rover, spd):
-    j=0
-    while j<5:
-        rover.moveForward(speed=spd)
-        j = j+1
-        time.sleep(1)
+    rover.moveForward(speed=spd)
 
-def coverBackwardArea(rover):
-    j=0
-    while j<5:
-        rover.moveBackward(speed=2)
-        j = j+1
-        time.sleep(1)
+def coverBackwardArea(rover, spd):
+    rover.moveBackward(speed=spd)
 
 def changeDirection(rover, angle):
-    j=0
-    while j<5:
-        rover.changeYaw(angle=angle,speed=0.02)
-        j = j+1
-        time.sleep(1)
+    rover.changeYaw(angle=angle,speed=0.02)
 
 def cleanArea(rover):
     try:
@@ -37,7 +25,7 @@ def cleanArea(rover):
         # backDist = rover.ul_back_edge.getDistance()
         #currently without ultrasonic sensor
         coverForwardArea(rover=rover,spd=2)
-        coverBackwardArea(rover=rover)
+        coverBackwardArea(rover=rover, spd=2)
         time.sleep(3)
         changeDirection(angle=0.2,rover=rover)
         coverForwardArea(rover=rover,spd=0.2)
@@ -71,27 +59,30 @@ def checkDistance(rover):
         
         print("************************************************************************************")
         time.sleep(1)
+
+def changeLane(rover):
+    print('Lane change')
+    changeDirection(angle=0.2,rover=rover)
+    coverForwardArea(rover=rover,spd=0.2)
+    changeDirection(angle=-0.2,rover=rover)
         
-        
-def cleanPanels():
+def cleanPanels(rover):
     try:
 
         #Check if cleaning should start
         while True:
             front = rover.ul_front_edge.checkDriveOk()
             back = rover.ul_back_edge.checkDriveOk()
-            frontDist = rover.ul_front_edge.getDistance()
-            backDist = rover.ul_back_edge.getDistance()
             
             if front:
                 print('Forward')
                 coverForwardArea(rover=rover,spd=2)
-            elif (front = False) and back:
+            elif (not front) and back:
                 rover.ul_front_edge.areaCompleted = True
-                coverBackwardArea(rover=rover)
-            elif (rover.ul_front_edge.areaCompleted = True and )
-            
-            
+                coverBackwardArea(rover=rover, spd=2)
+            elif (rover.ul_front_edge.areaCompleted) and (not back):
+                rover.ul_back_edge.areaCompleted = True
+                changeLane(rover=rover)
 
     except KeyboardInterrupt:
         keyboard_shutdown()
