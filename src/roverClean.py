@@ -1,88 +1,84 @@
 from .util import keyboard_shutdown
 import time
+import math
 
-def coverForwardArea(rover, spd):
-    rover.moveForward(speed=spd)
+length = 45
+breadth = 30
 
-def coverBackwardArea(rover, spd):
-    rover.moveBackward(speed=spd)
+
+def coverForwardArea(rover, d, spd):
+    rover.moveForward(x=d,speed=spd)
+
+def coverBackwardArea(rover, d, spd):
+    rover.moveBackward(x=d,speed=spd)
 
 def changeDirection(rover, angle):
     rover.changeYaw(angle=angle,speed=0.02)
 
-def cleanArea(rover):
+def sweep(rover):
+    
     try:
+        while(rover.front_edge.checkDriveOk() == True):
+                        
+            if (rover.back_edge.checkDriveOk() == True):
+                changeLane()         
 
-        #Check if cleaning should start
+            else:
+                coverBackwardArea(rover,spd=2)
 
-        print('check drone status')
-        rover.workingStatus = True
-        rover.setupAndArm()
-        rover.changeVehicleMode('GUIDED')
-        print('Cleaning Started')
-
-        # frontDist = rover.ul_front_edge.getDistance()
-        # backDist = rover.ul_back_edge.getDistance()
-        #currently without ultrasonic sensor
-        coverForwardArea(rover=rover,spd=2)
-        coverBackwardArea(rover=rover, spd=2)
-        time.sleep(3)
-        changeDirection(angle=0.2,rover=rover)
-        coverForwardArea(rover=rover,spd=0.2)
-        changeDirection(angle=-0.2,rover=rover)
-
-        rover.workingStatus = False
+        else:
+            coverForwardArea(rover,spd=2)
 
     except KeyboardInterrupt:
-        keyboard_shutdown()
-
-def checkDistance(rover):
-    print('started')
-    while True:
-        front = rover.ul_front_edge.checkDriveOk()
-        back = rover.ul_back_edge.checkDriveOk()
-        frontDist = rover.ul_front_edge.getDistance()
-        backDist = rover.ul_back_edge.getDistance()
-        
-        if front:
-            print("Drive")
-            print("Front Distance:", frontDist)
-        else:
-            print("Dont Drive Forward, Edge Reached")
-        
-        print("------------------------------------")
-        if back:
-            print("Drive")
-            print("Back Distance:", backDist)
-        else:
-            print("Dont Drive Backward, Edge Reached")
-        
-        print("************************************************************************************")
-        time.sleep(1)
+        keyboard_shutdown()  
 
 def changeLane(rover):
-    print('Lane change')
-    changeDirection(angle=0.2,rover=rover)
-    coverForwardArea(rover=rover,spd=0.2)
-    changeDirection(angle=-0.2,rover=rover)
-        
-def cleanPanels(rover):
-    try:
+    
+    H = math.sqrt(((length/2)**2)+(breadth**2))
+    theta = math.atan((breadth)/(length/2))
 
-        #Check if cleaning should start
-        while True:
-            front = rover.ul_front_edge.checkDriveOk()
-            back = rover.ul_back_edge.checkDriveOk()
+    try:
+        while(rover.back_edge.checkDriveOk() == True):
             
-            if front:
-                print('Forward')
-                coverForwardArea(rover=rover,spd=2)
-            elif (not front) and back:
-                rover.ul_front_edge.areaCompleted = True
-                coverBackwardArea(rover=rover, spd=2)
-            elif (rover.ul_front_edge.areaCompleted) and (not back):
-                rover.ul_back_edge.areaCompleted = True
-                changeLane(rover=rover)
+            coverForwardArea(rover,d=int((length/2)),spd=2)
+            changeDirection(rover, theta)
+            
+            if (rover.front_edge.checkDriveOk() == True):
+            # Lane End
+                changeDirection(rover, -theta)
+                coverBackwardArea(rover,d=int((length/2)),spd=2)
+                #check drone status
+                #call dock function()
+                break
+
+            else:
+                coverForwardArea(rover,d=int((H)),spd=2)
+                changeDirection(rover, (-theta))
+                coverBackwardArea(rover,d=int((3*length)/2),spd=2)
+
+    except KeyboardInterrupt:
+        keyboard_shutdown()  
+
+def cleanArea(rover):
+    try:
+        while (rover.back_edge.checkDriveOk() == False):
+            
+            print('check drone status')
+            rover.workingStatus = True
+            rover.setupAndArm()
+            rover.changeVehicleMode('GUIDED')
+            coverForwardArea(rover,d=int((length)),spd=2)
+            #wait till drone takeoff
+            coverBackwardArea(rover,spd=2)
+
+            if (rover.back_edge.checkDriveOk() == True):
+                changeDirection(rover, 90)
+                break
+            else:
+                coverBackwardArea(rover,spd=2)
+
+            print('starting Cleaning')
+            sweep()
 
     except KeyboardInterrupt:
         keyboard_shutdown()
