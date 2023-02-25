@@ -18,9 +18,9 @@ def changeDirection(rover, angle):
 def sweep(rover):
     
     try:
-        while(rover.front_edge.checkDriveOk() == True):
+        while(rover.ul_front_edge.checkDriveOk() == True):
                         
-            if (rover.back_edge.checkDriveOk() == True):
+            if (rover.ul_back_edge.checkDriveOk() == True):
                 changeLane()         
 
             else:
@@ -38,12 +38,12 @@ def changeLane(rover):
     theta = math.atan((breadth)/(length/2))
 
     try:
-        while(rover.back_edge.checkDriveOk() == True):
+        while(rover.ul_back_edge.checkDriveOk() == True):
             
             coverForwardArea(rover,d=int((length/2)),spd=2)
             changeDirection(rover, theta)
             
-            if (rover.front_edge.checkDriveOk() == True):
+            if (rover.ul_front_edge.checkDriveOk() == True):
             # Lane End
                 changeDirection(rover, -theta)
                 coverBackwardArea(rover,d=int((length/2)),spd=2)
@@ -61,7 +61,7 @@ def changeLane(rover):
 
 def cleanArea(rover):
     try:
-        while (rover.back_edge.checkDriveOk() == False):
+        while (rover.ul_back_edge.checkDriveOk() == False):
             
             print('check drone status')
             rover.workingStatus = True
