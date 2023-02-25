@@ -7,11 +7,17 @@ breadth = 30
 
 #True = edge detected 
 
-def coverForwardArea(rover, spd, d):
-    rover.moveForward(speed=spd,x=d)
+def coverForwardArea(rover, spd):
+    rover.moveF(speed=spd)
 
-def coverBackwardArea(rover, spd, d):
-    rover.moveBackward(speed=spd,x=d)
+def coverBackwardArea(rover, spd):
+    rover.moveB(speed=spd)
+
+def MoveForward(rover, spd, d):
+    rover.moveF_L(speed=spd,d=d)
+
+def MoveBackward(rover, spd, d):
+    rover.moveB_L(speed=spd,d=d)
 
 def changeDirection(rover, angle):
     rover.changeYaw(angle=angle,speed=0.02)
@@ -44,22 +50,22 @@ def changeLane(rover):
     try:
         while(rover.ul_back_edge.checkDriveOk() == True):
             
-            coverForwardArea(rover,spd=2, d=int((length/2)))
+            MoveForward(rover,spd=2, d=int((length/2)))
             changeDirection(rover, theta)
     
             if (rover.ul_front_edge.checkDriveOk() == True):
             # Lane End
                 print("Lane End")
                 changeDirection(rover, -theta)
-                coverBackwardArea(rover,spd=2, d=int((length/2)))
+                MoveBackward(rover,spd=2, d=int((length/2)))
                 #check drone status
                 #call dock function()
                 break
 
             else:
-                coverForwardArea(rover,spd=2, d=int((H)))
+                MoveForward(rover,spd=2, d=int((H)))
                 changeDirection(rover, (-theta))
-                coverBackwardArea(rover,spd=2, d=int((3*length)/2))
+                MoveBackward(rover,spd=2, d=int((3*length)/2))
 
     except KeyboardInterrupt:
         keyboard_shutdown()  
@@ -72,7 +78,7 @@ def cleanArea(rover):
             rover.workingStatus = True
             rover.setupAndArm()
             rover.changeVehicleMode('GUIDED')
-            coverForwardArea(rover,spd=2, d=int((length)))
+            MoveForward(rover,spd=2, d=int((length)))
             print("Undocking")
             #wait till drone takeoff
             coverBackwardArea(rover,spd=2)
