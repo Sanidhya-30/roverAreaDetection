@@ -83,7 +83,7 @@ def cleanArea(rover):
             #wait till drone takeoff
             coverBackwardArea(rover,spd=2)
 
-            if (rover.back_edge.checkDriveOk() == True):
+            if (rover.ul_back_edge.checkDriveOk() == True):
                 changeDirection(rover, 90)
                 print("Orienting to corner")
                 
