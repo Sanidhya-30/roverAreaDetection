@@ -1,5 +1,5 @@
 from .Rover import * 
-from src.roverClean import cleanArea
+from .roverClean import *
 
 
 def mainStart(serial=None, connection=None):
