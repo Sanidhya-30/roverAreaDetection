@@ -5,7 +5,7 @@ import math
 length = 45
 breadth = 30
 
-#True = edge detected 
+#True = edge detected
 
 def coverForwardArea(rover, spd):
     rover.moveF(speed=spd)
@@ -23,13 +23,13 @@ def changeDirection(rover, angle):
     rover.changeYaw(angle=angle,speed=0.02)
 
 def sweep(rover):
-    
+    print("Sweeeping")
     try:
         while(rover.ul_front_edge.checkDriveOk() == True):
                         
             if (rover.ul_back_edge.checkDriveOk() == True):
-                changeLane()
-                print("Changing Lane")
+                changeLane(rover=rover)
+                print("Change Lane function called")
 
             else:
                 coverBackwardArea(rover,spd=2)
@@ -43,7 +43,7 @@ def sweep(rover):
         keyboard_shutdown()  
 
 def changeLane(rover):
-    
+    print("Changing Lane")
     H = math.sqrt(((length/2)**2)+(breadth**2))
     theta = math.atan((breadth)/(length/2))
 
@@ -71,34 +71,52 @@ def changeLane(rover):
         keyboard_shutdown()  
 
 def cleanArea(rover):
-  #  try:
-        while (rover.ul_back_edge.checkDriveOk() == False):
-
-            print('check drone status')
-            rover.workingStatus = True
-            rover.setupAndArm()
-            rover.changeVehicleMode('GUIDED')
+    print('check drone status')
+    rover.workingStatus = True
+    rover.setupAndArm()
+    rover.changeVehicleMode('GUIDED')
+    time.sleep(2)
+    
+    try:
+        if ((rover.ul_back_edge.checkDriveOk() == False)): # (rover.ul_front_edge.checkDriveOk() == False)):
+            
             MoveForward(rover,spd=2, d=int((length)))
             print("Undocking")
             #wait till drone takeoff
             coverBackwardArea(rover,spd=2)
+            time.sleep(1)
 
-            if (rover.back_edge.checkDriveOk() == True):
+            if (rover.ul_back_edge.checkDriveOk() == True):
                 changeDirection(rover, 90)
                 print("Orienting to corner")
+                time.sleep(1)
                 
-                if (rover.back_edge.checkDriveOk() == True):
-                    print("Starting sweep")
-                    sweep()
+                if (rover.ul_back_edge.checkDriveOk() == True):
+                    print("Sweep function called")
+                    sweep(rover=rover)
+                    time.sleep(1)
             
                 else:
                     coverBackwardArea(rover,spd=2)
                     print("Going to Top-Right corner")  
-            
+                    time.sleep(1)
             else:
                 coverBackwardArea(rover,spd=2)
                 print("Going to Top edge")
+                time.sleep(1)
+        
+        else:
+            
+            if(rover.ul_back_edge.checkDriveOk() == False):
+                coverForwardArea(rover,spd=2)
+                print("Caution Forward")
+                time.sleep(1)
+                
+            elif(rover.ul_front_edge.checkDriveOk() == False):
+                coverBackwardArea(rover,spd=2)
+                print("Caution Backward")
+                time.sleep(1)
                 
 
-   # except KeyboardInterrupt:
-    #    keyboard_shutdown()
+    except KeyboardInterrupt:
+        keyboard_shutdown()
