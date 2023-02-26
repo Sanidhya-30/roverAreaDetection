@@ -57,19 +57,19 @@ class Rover:
 		0,
 		0,0, 0)
     
-    def moveF(self, speed):
+    def moveForward(self, speed):
         self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
                         self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b110111000111), 0, 0, 0, speed, 0, 0, 0, 0, 0, 0, 0))
 
-    def moveB(self, speed):
+    def moveBackward(self, speed):
         self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
                         self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b11011100111), 0, 0, 0, -(speed), 0, 0, 0, 0, 0, 0, 0))
 
-    def moveF_L(self, speed, d=0):
+    def moveForward_L(self, speed, d=0):
         self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
                         self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b110111000110), d, 0, 0, speed, 0, 0, 0, 0, 0, 0, 0))
 
-    def moveB_L(self, speed, d=0):
+    def moveBackward_L(self, speed, d=0):
         self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
                         self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b11011100110), d, 0, 0, -(speed), 0, 0, 0, 0, 0, 0, 0))
 
